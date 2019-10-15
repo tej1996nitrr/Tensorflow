@@ -31,6 +31,7 @@ labels = diabetes['Class']
 
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(x_data,labels,test_size=0.33, random_state=101)
+
 '''Training'''
 input_func = tf.estimator.inputs.pandas_input_fn(x=X_train,y=y_train,batch_size=10,num_epochs=1000,shuffle=True)
 model = tf.estimator.LinearClassifier(feature_columns=feat_cols,n_classes=2)
@@ -57,11 +58,20 @@ shuffle=False
 predictions=model.predict(pred_func)
 list(predictions)
 
-'''DNN '''
+'''Deep NN Classifier'''
+embedded_group_column = tf.feature_column.embedding_column(assigned_group, dimension=4)
+feat_cols = [num_preg ,plasma_gluc,dias_press ,tricep ,insulin,bmi,diabetes_pedigree ,embedded_group_column, age_buckets]
+input_func = tf.estimator.inputs.pandas_input_fn(x=X_train,y=y_train,batch_size=10,num_epochs=1000,shuffle=True)
+dnn_model = tf.estimator.DNNClassifier(hidden_units=[10,10,10],feature_columns=feat_cols,n_classes=2)
+dnn_model.train(input_fn=input_func,steps=1000)
 
-
-
-
+eval_input_func = tf.estimator.inputs.pandas_input_fn(
+      x=X_test,
+      y=y_test,
+      batch_size=10,
+      num_epochs=1,
+      shuffle=False)
+dnn_model.evaluate(eval_input_func)
 
 
 

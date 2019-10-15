@@ -75,5 +75,3 @@ for x in estimator.predict(input_fn=input_fn_predict):
     predictions.append(x['predictions'])
 predictions
 
-my_data.sample(n=250).plot(kind='scatter',x='X Data',y='Y')
-plt.plot(np.linspace(0,10,10),predictions,'r')
